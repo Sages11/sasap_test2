@@ -1,5 +1,5 @@
 ---
-title: "rmarkdown4course"
+title: "mywebsite"
 author: "Sarah Power"
 date: "November 29, 2017"
 output: html_document
