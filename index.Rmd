@@ -15,11 +15,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Here we go again.
 
-```{r cars}
+```{r, cache = TRUE}
 escapement <- read.csv("ADFG_firstAttempt_reformatted.csv",  stringsAsFactors = FALSE)
-
-escapement
-
 ```
 ```{r}
 library(tidyr)
@@ -27,24 +24,24 @@ library(dplyr)
 library(leaflet)
 library(ggplot2)
 library(DT)
-
 ```
 
 ```{r}
 median_esc <- escapement %>% 
   separate(sampleDate, c("Year", "Month", "Day"), sep = "-") %>% 
   group_by(Species, Year, Location) %>% 
-  summarize(escapement = sum(DailyCount)) %>% 
+  summarize(escapement = sum(DailyCount, na.rm = TRUE)) %>% 
   group_by(Species) %>% 
   summarize(median_escapement = median(escapement))
-
-
 ```
 
 ```{r}
 ggplot(median_esc, aes(Species, median_escapement)) +
   geom_col() +
   coord_flip()
+```
+```{r}
+datatable(median_esc)
 ```
 
 ```{r}
@@ -53,5 +50,11 @@ locations <- escapement %>%
   drop_na()
 
 datatable(locations)
+```
+
+```{r}
+leaflet(locations) %>% 
+  addTiles() %>% 
+  addMarkers(~ -abs(Longitude), ~ Latitude, popup = ~ Location)
 ```
 
